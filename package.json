@@ -1,0 +1,15 @@
+{
+  "name": "agile_avengers",
+  "version": "1.0.0",
+  "description": "First set of project to host API for patient registration ",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Hariharakumar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.1.1"
+  }
+}

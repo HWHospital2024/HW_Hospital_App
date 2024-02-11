@@ -1,0 +1,44 @@
+GET http://localhost:3000/Patient
+
+###create a patient list
+POST http://localhost:3000/Patient
+Content-Type:  application/json
+
+{
+    "Patient_id" : "100001",
+    "Patient_name" : "Hari1",
+    "DOB": "15-jan-1987",
+    "Address1" : "Sports City",
+    "City": "Dubai",
+    "Country": "United Arab Emirates",
+    "Nationality": "Indian",
+    "Insurance": "Met life"
+}
+
+
+###Get a patient by ID
+GET  http://localhost:3000/Patient/id
+
+
+###create a patient by ID
+PATCH  http://localhost:3000/Patient/id
+
+
+###Delete a patient by ID
+DELETE http://localhost:3000/Patient/id
+
+### Exceptions
+GET http://localhost:3000/yghgh
+
+###test fetch
+GET http://localhost:3000/test?name=Hari&dob=15-jan-87
+
+
+###test fetch
+POST http://localhost:3000/test
+Content-Type: application/json
+
+{
+    "name": "Hari",
+    "dob": "15-jan-87"
+}
