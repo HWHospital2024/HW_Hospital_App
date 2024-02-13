@@ -1,45 +1,20 @@
+//Patient Route configuration is all called here
+
 const express = require('express');
 const router = express.Router();
-
+const createError = require('http-errors');
+const mongoose = require('mongoose');
 const Patient = require('../Models/Patient.model')
+const PatientController = require ('../Controller/Patient.Controller')
 
-router.get('/',(req,res,next) => {
-    res.send('Getting the list of all patients');
-})
+router.get('/',PatientController.getAllPatients);
 
-router.post('/',(req,res,next) => {
-    console.log(req.body);
-    const patient = new Patient({
-        Patient_id: req.body.Patient_id,
-        Patient_name: req.body.Patient_name,
-        DOB: req.body.DOB,
-        Address1: req.body.Address1,
-        City: req.body.City,
-        Country: req.body.Country,
-        Nationality: req.body.Nationality,
-        Insurance: req.body.Insurance 
-    });
-    patient.save()
-    .then(result => {
-        console.log(result);
-        res.send(result);
-    })
-    .catch(err => {
-        console.log(err.message);
-    })    
-});
+router.post('/',PatientController.createNewPatient);
 
-router.get('/:id',(req,res,next) => {
-    res.send('Getting a single patient');
-})
+router.get('/:id',PatientController.getPatientBYID);
 
-router.patch('/:id',(req,res,next) => {
-    res.send('Updating a single Patient');
-});
+router.patch('/:id',PatientController.updatePatientbyID);
 
-router.delete('/:id',(req,res,next) => {
-    res.send('Deleting a single patient');
-});
-
+router.delete('/:id',PatientController.deletePatientbyID);
 
 module.exports = router;

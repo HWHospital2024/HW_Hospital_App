@@ -1,3 +1,4 @@
+###All Patients
 GET http://localhost:3000/Patient
 
 ###create a patient list
@@ -5,9 +6,9 @@ POST http://localhost:3000/Patient
 Content-Type:  application/json
 
 {
-    "Patient_id" : "100001",
-    "Patient_name" : "Hari1",
-    "DOB": "15-jan-1987",
+    "Patient_id" : "100010",
+    "Patient_name" : "Tim",
+    "DOB": "20-may-1987",
     "Address1" : "Sports City",
     "City": "Dubai",
     "Country": "United Arab Emirates",
@@ -17,15 +18,19 @@ Content-Type:  application/json
 
 
 ###Get a patient by ID
-GET  http://localhost:3000/Patient/id
+GET  http://localhost:3000/Patient/10000006
 
 
-###create a patient by ID
-PATCH  http://localhost:3000/Patient/id
+###Update patient by ID
+PATCH  http://localhost:3000/Patient/65ca772ad0c04d391e4f1
+Content-Type:  application/json
 
+{
+    "Patient_id" : 1000007
+}
 
 ###Delete a patient by ID
-DELETE http://localhost:3000/Patient/id
+DELETE http://localhost:3000/Patient/100006
 
 ### Exceptions
 GET http://localhost:3000/yghgh
