@@ -1,34 +1,20 @@
 const express = require('express');
-const mongoose = require('mongoose');
 
+const createError = require('http-errors');
 const app = express();
+const dotenv = require('dotenv').config();
 
 app.use(express.json());
 
-mongoose
-    .connect('mongodb+srv://hospitalcust01.tu8mog8.mongodb.net/',
-    {
-        dbName: 'Hospital',
-        user:'hr3000',
-        pass: 'ia9vLUpL9TQPi1RC'
-    })
-.then(() => {
-    console.log("MongoDB connected");
-})
+//Initialize DB Connection 
+require('./initDB')();
 
-app.all('/test',(req,res)=>{
-    console.log(req.body);
-    //console.log(req.querxy.name);
-    res.send(req.body);
-})
-
+//Declare all routes here
 const PatientRoute = require('./Routes/Patient.route');
 app.use('/Patient',PatientRoute);
 
 app.use((req,res,next) =>{
-    const err = new Error("Not Found")
-    err.status = 404
-    next(err)
+    next(createError(404, 'Not Found'));
 });
 
 //Error Handler
@@ -42,6 +28,8 @@ app.use((err,req,res,next) =>{
     })
 })
 
-app.listen(3000, () =>{
-    console.log('Server started on port 3000...');
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, () =>{
+    console.log('Server started on port ' || PORT);
 });
