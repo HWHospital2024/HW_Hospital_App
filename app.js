@@ -13,6 +13,10 @@ require('./initDB')();
 const PatientRoute = require('./Routes/Patient.route');
 app.use('/Patient',PatientRoute);
 
+//Declare all routes here
+const BedRoute = require('./Routes/Bed.route');
+app.use('/Bed',BedRoute);
+
 app.use((req,res,next) =>{
     next(createError(404, 'Not Found'));
 });
