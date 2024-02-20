@@ -6,23 +6,30 @@ POST http://localhost:3000/Patient
 Content-Type:  application/json
 
 {
-    "Patient_id" : "100010",
-    "Patient_name" : "Tim",
-    "DOB": "20-may-1987",
-    "Address1" : "Sports City",
+    "Patient_id" : "100013",
+    "ID_type" : "Emirates",
+    "Patient_name" : "Tan",
+    "DOB": "20-Jun-1987",
+    "Gender": "male",
+    "Address" : " City",
     "City": "Dubai",
+    "Phone_number": "050123456",
+    "email": "test@test.com",
     "Country": "United Arab Emirates",
     "Nationality": "Indian",
-    "Insurance": "Met life"
+    "emr_contact_name": "Indian",
+    "emr_contact_number": "050123456",
+    "Insurance_provider": "Indian",
+    "Insurance_provider_number": "111000"
 }
 
 
 ###Get a patient by ID
-GET  http://localhost:3000/Patient/10000006
+GET  http://localhost:3000/Patient/100014
 
 
 ###Update patient by ID
-PATCH  http://localhost:3000/Patient/65ca772ad0c04d391e4f1
+PATCH  http://localhost:3000/Patient/65d4f6aa533f102e1cbb3e5e
 Content-Type:  application/json
 
 {
@@ -46,4 +53,31 @@ Content-Type: application/json
 {
     "name": "Hari",
     "dob": "15-jan-87"
+}
+
+
+###All Beds
+GET http://localhost:3000/Bed
+
+###create a Bed list
+POST http://localhost:3000/Bed
+Content-Type:  application/json
+
+{
+    "Bed_type" : "Special",
+    "Bed_Floor" : "1",
+    "Bed_number" : "110",
+    "Bed_rate": "10",
+    "Bed_status": "Available"
+}
+
+###Bed by type
+GET http://localhost:3000/Bed/ICU
+
+###Update Bed by ID
+PATCH  http://localhost:3000/Bed/65d4fda446130be83fc2e524
+Content-Type:  application/json
+
+{
+    "Bed_status" : "Available"
 }

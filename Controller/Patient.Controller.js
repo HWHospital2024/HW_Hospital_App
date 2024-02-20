@@ -49,13 +49,13 @@ module.exports = {
         try{
             const patient = await Patient.findOne({Patient_id : id});
             if (!patient){
-                throw createError(404, "Product Doesnt exist");
+                throw createError(404, "Patient Doesnt exist");
             }
             res.send(patient);
         }catch(error){
             console.log(error.message);
             if(error instanceof mongoose.CastError) {
-                next(createError(404,"Invalid Product ID"));
+                next(createError(404,"Invalid Patient ID"));
             }
             next(error);
         }
