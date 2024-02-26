@@ -1,5 +1,5 @@
 const express = require('express');
-
+const http = require('http');
 const createError = require('http-errors');
 const app = express();
 const dotenv = require('dotenv').config();
@@ -33,7 +33,8 @@ app.use((err,req,res,next) =>{
 })
 
 const PORT = process.env.PORT || 3000
+const HOSTNAME = process.env.HOSTNAME || 3000
 
-app.listen(PORT, () =>{
+app.listen(PORT, HOSTNAME, () =>{
     console.log('Server started on port ' || PORT);
 });
