@@ -21,6 +21,10 @@ app.use("/Bed", BedRoute);
 const wardRoute = require("./Routes/ward.route");
 app.use("/ward", wardRoute);
 
+//Declare 4th route here
+const mongoose = require('mongoose');
+const labResultRoutes = require('./labResult.routes');
+
 app.use((req, res, next) => {
   next(createError(404, "Not Found"));
 });
