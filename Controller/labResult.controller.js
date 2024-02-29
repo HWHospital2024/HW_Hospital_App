@@ -21,6 +21,7 @@ exports.getAllLabResults = async (req, res) => {
   }
 };
 
+
 // Controller function to get a lab result by ID
 exports.getLabResultById = async (req, res) => {
   try {
