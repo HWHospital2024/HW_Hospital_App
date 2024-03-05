@@ -137,6 +137,51 @@ const getPatientactAppointments = async (req, res) => {
   }
 };
 
+const getPatientTreatments = async (req, res) => {
+  const patientID = req.params.patientID;
+
+  try {
+    const patients = await Patient.find({ "_id": patientID });
+    const treatment = patients.map((patient) =>
+      patient.treatment
+    );
+    res.send(treatment);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getPatientactTreatments = async (req, res) => {
+  const patientID = req.params.patientID;
+  try {
+    const currentDate = new Date();
+    const patients = await Patient.find({ "_id": patientID });
+    const treatment = patients.map((patient) =>
+      patient.treatment.filter(
+        (treatment) => treatment.endDate >= currentDate 
+        ));
+    res.send(treatment);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+
+
+const getDoctorReferrals = async (req, res) => {
+  const doctorName = req.params.doctorName;
+
+  try {
+    const patients = await Patient.find({ "referrals.referredTo": doctorName });
+    const referrals = patients.map((patient) =>
+      patient.referrals.filter((referral) => referral.referredBy === doctorName)
+    );
+    res.send(referrals);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   createPatient,
   getAllPatients,
@@ -145,6 +190,9 @@ module.exports = {
   updatePatientById,
   deletePatientById,
   getDoctorAppointments,
+  getDoctorReferrals,
   getPatientAppointments,
   getPatientactAppointments,
+  getPatientTreatments,
+  getPatientactTreatments
 };

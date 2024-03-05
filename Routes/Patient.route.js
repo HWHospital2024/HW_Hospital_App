@@ -53,6 +53,20 @@ router.get(
   patientController.getPatientactAppointments
 );
 
+router.get(
+  "/patients/treatments/:patientID",
+  patientController.getPatientTreatments
+);
+
+router.get(
+  "/patients/curtreatments/:patientID",
+  patientController.getPatientactTreatments
+);
+
+router.get(
+  "/doctors/:doctorName/referrals",
+  patientController.getDoctorReferrals
+);
 // router.delete("/patients/:id", patientController.deletePatientById);
 
 module.exports = router;
