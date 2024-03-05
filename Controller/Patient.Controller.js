@@ -1,87 +1,150 @@
-//Controller File containing all the API elements.getPatientBYID
+const Patient = require("../Models/Patient.model");
 
-const Patient = require('../Models/Patient.model');
-const mongoose = require('mongoose');
-const createError = require('http-errors');
+const createPatient = async (req, res) => {
+  const patient = new Patient(req.body);
+  try {
+    await patient.save();
+    res.status(201).send(patient);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+const getAllPatients = async (req, res) => {
+  try {
+    const patients = await Patient.find({});
+    res.send(patients);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getPatientById = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const patient = await Patient.findById(_id);
+    if (!patient) {
+      return res.status(404).send();
+    }
+    res.send(patient);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getPatientByDetails = async (req, res) => {
+  const query = {};
+  if (req.query.patientId)
+    query["personalDetails.patientId"] = req.query.patientId;
+  if (req.query.firstName)
+    query["personalDetails.firstName"] = req.query.firstName;
+  if (req.query.lastName)
+    query["personalDetails.lastName"] = req.query.lastName;
+  if (req.query.email) query["personalDetails.email"] = req.query.email;
+  if (req.query.contactNumber)
+    query["personalDetails.contactNumber"] = req.query.contactNumber;
+
+  try {
+    const patient = await Patient.findOne(query);
+    if (!patient) {
+      return res.status(404).send();
+    }
+    res.send(patient);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const updatePatientById = async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = Object.keys(Patient.schema.obj);
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid updates!" });
+  }
+
+  try {
+    const patient = await Patient.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!patient) {
+      return res.status(404).send();
+    }
+    res.send(patient);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
+const deletePatientById = async (req, res) => {
+  try {
+    const patient = await Patient.findByIdAndDelete(req.params.id);
+    if (!patient) {
+      return res.status(404).send();
+    }
+    res.send(patient);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getDoctorAppointments = async (req, res) => {
+  const doctorName = req.params.doctorName;
+
+  try {
+    const patients = await Patient.find({ "appointments.doctor": doctorName });
+    const appointments = patients.map((patient) =>
+      patient.appointments.filter(
+        (appointment) => appointment.doctor === doctorName
+      )
+    );
+    res.send(appointments);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getPatientAppointments = async (req, res) => {
+  const patientID = req.params.patientID;
+
+  try {
+    const patients = await Patient.find({ "_id": patientID });
+    const appointments = patients.map((patient) =>
+      patient.appointments
+    );
+    res.send(appointments);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getPatientactAppointments = async (req, res) => {
+  const patientID = req.params.patientID;
+  try {
+    const currentDate = new Date();
+    const patients = await Patient.find({ "_id": patientID });
+    const appointments = patients.map((patient) =>
+      patient.appointments.filter(
+        (appointment) => appointment.date >= currentDate && appointment.status === "Scheduled"
+        ));
+    res.send(appointments);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 module.exports = {
-    getAllPatients: async(req,res,next) => {
-        //res.send('Getting the list of all patients');
-        try{
-            const results = await Patient.find({},{ Patient_id : 1, _id : 0, Patient_name :1 });
-            res.send(results);
-        }catch(error){
-            console.log(error.message);
-        }
-    },
-    createNewPatient: async(req,res,next) => {
-        //console.log(req.body);
-        try {
-            const patient = new Patient(req.body);
-            const result = await patient.save();
-            res.send(result);
-        }catch(error){
-            console.log(error.message);
-        }
-    
-        /*const patient = new Patient({
-            Patient_id: req.body.Patient_id,
-            Patient_name: req.body.Patient_name,
-            DOB: req.body.DOB,
-            Address1: req.body.Address1,
-            City: req.body.City,
-            Country: req.body.Country,
-            Nationality: req.body.Nationality,
-            Insurance: req.body.Insurance 
-        });
-        patient.save()
-        .then(result => {
-            console.log(result);
-            res.send(result);
-        })
-        .catch(err => {
-            console.log(err.message);
-        }) */   
-    },
-    
-    getPatientBYID: async(req,res,next) => {
-        const id = req.params.id;
-        try{
-            const patient = await Patient.findOne({Patient_id : id});
-            if (!patient){
-                throw createError(404, "Patient Doesnt exist");
-            }
-            res.send(patient);
-        }catch(error){
-            console.log(error.message);
-            if(error instanceof mongoose.CastError) {
-                next(createError(404,"Invalid Patient ID"));
-            }
-            next(error);
-        }
-    },
-
-    updatePatientbyID: async(req,res,next) => {
-        try{
-        const id = req.params.id;
-        const updates = req.body;
-        const options = { new: true };
-        const result = await Patient.findByIdAndUpdate(id,updates,options);
-            console.log(result);
-            res.send(result);
-        }catch(error){
-            console.log(error.message);
-        }
-    },
-
-    deletePatientbyID: async(req,res,next) => {
-        const id = req.params.id;
-        try{
-            const result = await Patient.findOneAndDelete({Patient_id : id});
-            console.log(result);
-            res.send(result);
-        }catch(error){
-            console.log(error.message);
-        }
-    }
+  createPatient,
+  getAllPatients,
+  getPatientById,
+  getPatientByDetails,
+  updatePatientById,
+  deletePatientById,
+  getDoctorAppointments,
+  getPatientAppointments,
+  getPatientactAppointments,
 };

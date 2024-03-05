@@ -1,20 +1,58 @@
-//Patient Route configuration is all called here
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const createError = require('http-errors');
-const mongoose = require('mongoose');
-const Patient = require('../Models/Patient.model')
-const PatientController = require ('../Controller/Patient.Controller')
+const auth = require("../middleware/auth");
+const permit = require("../middleware/permit");
+const patientController = require("../Controller/Patient.Controller");
 
-router.get('/',PatientController.getAllPatients);
+router.post(
+  "/patients",
+  auth,
+  permit("clerk"),
+  patientController.createPatient
+); //register patient with basic details
 
-router.post('/',PatientController.createNewPatient);
+router.get(
+  "/patients",
+  auth,
+  permit("clerk", "doctor", "nurse", "paramedic"),
+  patientController.getAllPatients
+);
+router.get(
+  "/patients/id/:id",
+  auth,
+  permit("clerk", "doctor", "nurse", "paramedic"),
+  patientController.getPatientById
+);
 
-router.get('/:id',PatientController.getPatientBYID);
+router.get(
+  "/patients/details",
+  auth,
+  permit("clerk", "doctor", "nurse", "paramedic"),
+  patientController.getPatientByDetails
+);
 
-router.patch('/:id',PatientController.updatePatientbyID);
+router.patch(
+  "/patients/:id",
+  auth,
+  permit("clerk", "doctor", "nurse", "paramedic"),
+  patientController.updatePatientById
+);
 
-router.delete('/:id',PatientController.deletePatientbyID);
+router.get(
+  "/doctors/:doctorName/appointments",
+  patientController.getDoctorAppointments
+);
+
+router.get(
+  "/patients/appointments/:patientID",
+  patientController.getPatientAppointments
+);
+
+router.get(
+  "/patients/curappointments/:patientID",
+  patientController.getPatientactAppointments
+);
+
+// router.delete("/patients/:id", patientController.deletePatientById);
 
 module.exports = router;
