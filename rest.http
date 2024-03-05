@@ -1,5 +1,5 @@
 ###All Patients
-GET http://localhost:4000/Patient
+GET http://localhost:3000/Patient
 
 ###create a patient list
 POST http://localhost:3000/Patient
