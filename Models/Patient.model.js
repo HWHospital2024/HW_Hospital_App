@@ -107,6 +107,200 @@ const PatientSchema = new mongoose.Schema({
       },
     },
   ],
+  referrals: [
+    {
+      service: {
+        type: String,
+        enum: [
+          "OT",
+          "Radiology",
+          "Pathology",
+          "Blood Bank",
+          "Physiotherapy",
+          "Operation Theatre",
+          "ICU",
+          "CCU",
+          "Wards",
+        ],
+      },
+      dateReferred: {
+        type: Date,
+        default: Date.now,
+      },
+      referredBy: {
+        type: String,
+      },
+      referredTo: {
+        // new field
+        type: String,
+      },
+    },
+  ],
+  diagnosis: [
+    {
+      condition: {
+        type: String,
+
+        trim: true,
+      },
+      dateDiagnosed: {
+        type: Date,
+      },
+      diagnosedBy: {
+        type: String,
+      },
+    },
+  ],
+  treatment: [
+    {
+      treatment: {
+        type: String,
+
+        trim: true,
+      },
+      startDate: {
+        type: Date,
+      },
+      endDate: {
+        type: Date,
+      },
+      prescribedBy: {
+        type: String,
+      },
+    },
+  ],
+  prescription: [
+    {
+      medication: {
+        type: String,
+
+        trim: true,
+      },
+      dosage: {
+        type: String,
+
+        trim: true,
+      },
+      frequency: {
+        type: String,
+
+        trim: true,
+      },
+      prescribedBy: {
+        type: String,
+      },
+      presDate: {
+        type: Date,
+      },
+    },
+  ],
+  dailyProgress: [
+    {
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      notes: {
+        type: String,
+
+        trim: true,
+      },
+      recordedBy: {
+        type: String,
+      },
+    },
+  ],
+  admissionDetails: {
+    admissionDate: {
+      type: Date,
+      default: Date.now,
+    },
+    ward: {
+      type: String,
+      enum: ["General", "OPD", "A&E"],
+    },
+
+    admittedBy: {
+      type: String,
+    },
+  },
+  dischargeSummary: {
+    dischargeDate: {
+      type: Date,
+    },
+    summary: {
+      type: String,
+
+      trim: true,
+    },
+    dischargedBy: {
+      type: String,
+    },
+  },
+  homeTreatmentPlan: {
+    startDate: {
+      type: Date,
+    },
+    treatmentPlan: {
+      type: String,
+
+      trim: true,
+    },
+    prescribedBy: {
+      type: String,
+    },
+  },
+  vitalSigns: [
+    {
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      temperature: {
+        type: Number,
+      },
+      bloodPressure: {
+        systolic: {
+          type: Number,
+        },
+        diastolic: {
+          type: Number,
+        },
+      },
+      pulseRate: {
+        type: Number,
+      },
+      recordedBy: {
+        type: String,
+      },
+    },
+  ],
+  medicineAndTreatment: [
+    {
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      medicine: {
+        type: String,
+
+        trim: true,
+      },
+      dosage: {
+        type: String,
+
+        trim: true,
+      },
+      intakeOutputInfo: {
+        type: String,
+
+        trim: true,
+      },
+      prescribedBy: {
+        type: String,
+      },
+    },
+  ],
   appointments: [
     {
       date: {
