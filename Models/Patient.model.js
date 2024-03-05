@@ -1,99 +1,145 @@
-//Every Model is defined here
+const mongoose = require("mongoose");
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
-const PatientSchema = new Schema({
-    Patient_id: {
-        type: Number,
-        require: true,
-        unique: true
+const PatientSchema = new mongoose.Schema({
+  personalDetails: {
+    patientId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
     },
     ID_type: {
-        type: String,
-        validate: {
-          validator: function(value) {
-            // Check if gender is either "male" or "female"
-            return value === 'Emirates' || value === 'Passport';
-          },
-          message: props => `${props.value} is not a valid gender, must be either "Emirates" or "Passport"`
-        }
-      },
-    Patient_name: {
-        type: String,
-        require: true
+      type: String,
+      validate: {
+        validator: function(value) {
+          // Check if ID type is either "Emirates" or "Passport"
+          return value === 'Emirates' || value === 'Passport';
+        },
+        message: props => `${props.value} is not a valid gender, must be either "Emirates" or "Passport"`
+      }
     },
-    DOB: {
-        type: Date,
-        validate: {
-          validator: function(value) {
-            // Check if date_of_birth is less than the current date
-            return value < new Date();
-          },
-          message: props => `${props.value} should be less than the current date`
-        }
-      },
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    dateOfBirth: {
+      required: true,
+      type: Date,
+    },
     Gender: {
-        type: String,
-        validate: {
-            validator: function(value) {
-            // Check if gender is either "male" or "female"
-            return value === 'male' || value === 'female';
-            },
-            message: props => `${props.value} is not a valid gender, must be either "male" or "female"`
-        }
+      type: String,
+      validate: {
+          validator: function(value) {
+          // Check if gender is either "male" or "female"
+          return value === 'male' || value === 'female';
+          },
+          message: props => `${props.value} is not a valid gender, must be either "male" or "female"`
+      }
     },
-    Address: {
-        type: String,
-        required: true
+    address: {
+      type: String,
+      required: true,
+      trim: true,
     },
     City: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    Phone_number: {
-        type: Number,
-        require: true
+    EmergencyPhonenumber: {
+      type: Number,
+      require: true,
     },
     email: {
-        type: String,
-        validate: {
-            validator: function(value) {
-              // Regular expression for email validation
-              return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-            },
-            message: props => `${props.value} is not a valid email address`
-          }
+      type: String,
+      validate: {
+        validator: function (value) {
+          // Check if email is valid
+          return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(value);
+        },
+        message: (props) => `${props.value} is not a valid email`,
+      },
     },
     Country: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     Nationality: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    emr_contact_name: {
-        type: String,
-        require: true
-    },
-    emr_contact_number: {
-        type: Number,
-        require: true
+    contactNumber: {
+      type: Number,
+      require: true,
     },
     Insurance_provider: {
-        type: String
+      type: String,
     },
     Insurance_provider_number: {
-        type: Number
-    }
+      type: Number,
     },
- {   collection: 'Patient' // Specify the collection name here 
-    });
+  },
+  knownDiseases: [
+    {
+      name: {
+        type: String,
+        trim: true,
+      },
+      dateDiagnosed: {
+        type: Date,
+      },
+    },
+  ],
+  complaints: [
+    {
+      complaint: {
+        type: String,
 
+        trim: true,
+      },
+      dateReported: {
+        type: Date,
+      },
+    },
+  ],
+  appointments: [
+    {
+      date: {
+        type: Date,
+        required: true,
+      },
+      time: {
+        type: String,
+        required: true,
+      },
+      doctor: {
+        type: String,
+        required: true,
+      },
+      purpose: {
+        type: String,
+        required: true,
+      },
+    dept: {
+      type: String,
+      enum: [
+        "OPD",
+        "Emergency"
+      ],
+      required: true,
+    },
+      status: {
+        type: String,
+        enum: ["Scheduled", "Completed", "Cancelled"],
+        default: "Scheduled",
+      },
+    },
+  ],
+});
 
-const Patient = mongoose.model('Patient',PatientSchema);
-module.exports = Patient;
-
-
-//export default ArticleModel;
+module.exports = mongoose.model("Patient", PatientSchema);
