@@ -10,10 +10,11 @@
   "author": "Hariharakumar",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
-    "mangodb": "^1.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
     "nodemon": "^3.0.3"
   }
