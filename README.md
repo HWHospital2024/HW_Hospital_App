@@ -7,11 +7,13 @@
 # 2. Patient API: The patient API is extended with appointment, treatment and referral with added features to get more details with rule based authentication to create details
 # 3. User Authentication API: Token based authentication is enabled where user can be registered as well as login can be established for the user
 # 4. Ward Management: Ward management is enabled for users and one can perform ward management using the ward management API.
-/*
- 	End Points	End Point URL	Notes 
-  •	POST	User Registration	http://localhost:3000/users/register
-  •	POST	User Login	http://localhost:3000/users/login
-    o	Token can be fetched as output
+
+  
+  /*
+  End Points	End Point URL	Notes 
+  
+  POST	User Registration	http://localhost:3000/users/register
+  POST	User Login	http://localhost:3000/users/login (Token can be fetched as output)
   •	POST	Create Patient	http://localhost:3000/patients
   •	GET	Get All patients	http://localhost:3000/patients
   •	GET	Get Patient BY ID	http://localhost:3000/patients/id/:PatientID
