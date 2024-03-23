@@ -28,4 +28,6 @@
   •	GET 	Current Patient Treatment	http://localhost:3000/patients/curtreatments/:PatientID
 
   The Token information from User login to be used to access rest of the API. 
+
+  Changes w.r.t Jenkins CICD pipeline is introduced
   */
