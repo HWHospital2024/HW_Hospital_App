@@ -16,17 +16,17 @@ pipeline {
                     def imageTag = "latest" // or specify your desired tag
                     
                     // Check if the Docker image exists
-                    def existingImage = sh(script: "docker images -q ${imageName}:${imageTag}", returnStdout: true).trim()
+                    def existingImage = sh(script: "sudo docker images -q ${imageName}:${imageTag}", returnStdout: true).trim()
                     
                     if (existingImage) {
                         echo "Found existing image: ${existingImage}. Removing it..."
                         
                         // Stop and remove the existing Docker container
-                        sh "docker stop ${imageName} || true"
-                        sh "docker rm ${imageName} || true"
+                        sh "sudo docker stop ${imageName} || true"
+                        sh "sudo docker rm ${imageName} || true"
                         
                         // Remove the existing Docker image
-                        sh "docker rmi ${imageName}:${imageTag}"
+                        sh "sudo docker rmi ${imageName}:${imageTag}"
                     } else {
                         echo "No existing image found with the name: ${imageName}:${imageTag}"
                     }
