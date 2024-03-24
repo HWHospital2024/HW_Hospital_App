@@ -1,7 +1,7 @@
 pipeline 
 {
     agent {
-        label 'Ubuntu-EC2-Instance' // Specify the label of the slave node
+        label 'ubuntu' // Specify the label of the slave node
     }
     stages{
         stage('Build')
