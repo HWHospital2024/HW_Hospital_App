@@ -1,7 +1,7 @@
 FROM node:latest
 
 WORKDIR /usr/src/app
-
+#copy package.jsaon
 COPY package*.json ./
 
 # Install dependencies
