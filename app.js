@@ -19,10 +19,6 @@ app.use(cors());
 const PatientRoute = require("./Routes/Patient.route");
 app.use("/", PatientRoute);
 
-// //Declare all routes here
-// const BedRoute = require("./Routes/Bed.route");
-// app.use("/Bed", BedRoute);
-
 //Declare all routes here
 const wardRoute = require("./Routes/ward.route");
 app.use("/", wardRoute);
