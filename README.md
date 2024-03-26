@@ -1,33 +1,41 @@
 # HW_Hospital_App
 
-# Version: 1.0
-# Details: Hospital API 
+## Version: 1.0
+## Details: Hospital API 
+/*******************************************************************************************************************************************************
+### Features:
+1. **Patient API:** 
+   - CRUD operations for patient records.
+   - Search patients by ID or details.
+   - Rule-based authentication for patient details.
 
-# 1. Patient API: We can create Patient record, search all patients, search with specific ID, Delete a patient from Data base & update patient details.
-# 2. Patient API: The patient API is extended with appointment, treatment and referral with added features to get more details with rule based authentication to create details
-# 3. User Authentication API: Token based authentication is enabled where user can be registered as well as login can be established for the user
-# 4. Ward Management: Ward management is enabled for users and one can perform ward management using the ward management API.
+2. **Appointment, Treatment, and Referral:**
+   - Extension of patient API to include appointment, treatment, and referral features.
+   - Rule-based authentication for creating details.
 
-  
-  /*
-  End Points	End Point URL	Notes test
-  
-  POST	User Registration	http://localhost:3000/users/register
-  POST	User Login	http://localhost:3000/users/login (Token can be fetched as output)
-  •	POST	Create Patient	http://localhost:3000/patients
-  •	GET	Get All patients	http://localhost:3000/patients
-  •	GET	Get Patient BY ID	http://localhost:3000/patients/id/:PatientID
-  •	GET	Get Patient BY Details	http://localhost:3000/patients/details?firstName=John
-    o	User can searchPatient Name, ID, Email, Contact No.
-  •	PATCH	Create Appointment	http://localhost:3000/patients/:PatientID
-  •	GET	Get Appointment by Doctor	http://localhost:3000/doctors/:Doctor_name/appointments
-  •	GET	Get All appointments by Patient	http://localhost:3000/patients/appointments/:PatientID
-  •	GET	Get Current Appointment by Patient	http://localhost:3000/patients/curappointments/:PatientID
-  •	PATCH	Create Treatment	http://localhost:3000/patients/:PatientID
-  •	GET 	All Patient Treatment	http://localhost:3000/patients/treatments/:PatientID
-  •	GET 	Current Patient Treatment	http://localhost:3000/patients/curtreatments/:PatientID
+3. **User Authentication API:**
+   - Token-based authentication for user registration and login.
 
-  The Token information from User login to be used to access rest of the API. 
+4. **Ward Management:**
+   - API for managing wards.
 
-  Changes w.r.t Jenkins CICD pipeline is introduced
-  */
+### Endpoints:
+- **User Registration:** `POST /users/register`
+- **User Login:** `POST /users/login` (Token returned)
+- **Create Patient:** `POST /patients`
+- **Get All Patients:** `GET /patients`
+- **Get Patient By ID:** `GET /patients/id/:PatientID`
+- **Get Patient By Details:** `GET /patients/details?firstName=John` (Search by Name, ID, Email, or Contact No.)
+- **Create Appointment:** `PATCH /patients/:PatientID`
+- **Get Appointment By Doctor:** `GET /doctors/:Doctor_name/appointments`
+- **Get All Appointments By Patient:** `GET /patients/appointments/:PatientID`
+- **Get Current Appointment By Patient:** `GET /patients/curappointments/:PatientID`
+- **Create Treatment:** `PATCH /patients/:PatientID`
+- **Get All Patient Treatments:** `GET /patients/treatments/:PatientID`
+- **Get Current Patient Treatment:** `GET /patients/curtreatments/:PatientID`
+
+**Note:** Use the token from User login to access the API.
+
+### Additional Information:
+Changes related to Jenkins CICD pipeline have been introduced.
+*******************************************************************************************************************************************************/
