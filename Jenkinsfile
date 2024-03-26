@@ -20,9 +20,9 @@ pipeline {
                         CONTAINER_ID=$(docker ps -aqf "ancestor=hw_hospital_api")
 
                         # Check if the container ID is not empty
-                        if [ -n "$CONTAINER_ID" ]; then
+                        if [ -n $CONTAINER_ID ]; then
                             # Remove the container
-                            docker rm "$CONTAINER_ID"
+                            docker rm -f $CONTAINER_ID
                             echo "Container with ID $CONTAINER_ID removed successfully."
                         else
                             echo "No container found with the specified image."
