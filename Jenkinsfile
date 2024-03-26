@@ -57,8 +57,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 // Install npm dependencies
-                sh 'npm install'
-                sh 'npm i chai@4'
+                sh 'sudo npm install'
+                sh 'sudo npm i chai@4'
 
                 // Run Mocha Chai tests
                 sh 'npm run test'
