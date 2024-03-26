@@ -8,7 +8,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/HWHospital2024/HW_Hospital_App'
             }
         }
- stages {
+        
         stage('Remove Container') {
             steps {
                 // Execute the shell script to remove the container
@@ -31,8 +31,7 @@ pipeline {
                 }
             }
         }
-    }        
-stages {
+        
         stage('Remove Docker Images') {
             steps {
                 script {
@@ -54,7 +53,6 @@ stages {
                 }
             }
         }
-    }
         
         stage('Docker build') {   
             steps{
@@ -62,6 +60,5 @@ stages {
                 sh 'sudo nohup docker run -p 3000:3000 hw_hospital_api &'
             }
         }
-        }
     }
-
+}
