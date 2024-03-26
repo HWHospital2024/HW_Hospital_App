@@ -58,7 +58,7 @@ pipeline {
             steps {
                 // Install npm dependencies
                 sh 'npm install'
-                sh 'sudo npm i chai@4'
+                sh 'npm i chai@4'
 
                 // Run Mocha Chai tests
                 sh 'npm run test'
