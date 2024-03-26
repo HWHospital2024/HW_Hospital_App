@@ -10,7 +10,7 @@
 
   
   /*
-  End Points	End Point URL	Notes 
+  End Points	End Point URL	Notes test
   
   POST	User Registration	http://localhost:3000/users/register
   POST	User Login	http://localhost:3000/users/login (Token can be fetched as output)
