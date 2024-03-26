@@ -47,3 +47,5 @@ const HOSTNAME = process.env.HOSTNAME || 3000;
 app.listen(PORT, HOSTNAME, () => {
   console.log("Server started on port " || PORT);
 });
+
+module.exports = app;
