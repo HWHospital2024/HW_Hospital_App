@@ -72,4 +72,12 @@ pipeline {
             }
         }
     }
+    post {
+        failure {
+            mail to: 'hwhr3000@gmail.com',
+                 subject: "Pipeline failed: ${currentBuild.fullDisplayName}",
+                 body: "The pipeline ${currentBuild.fullDisplayName} has failed. Please check Jenkins for more details."
+        }
+    }
+    
 }
