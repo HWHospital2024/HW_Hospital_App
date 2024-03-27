@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: hw-hospital-api-container
-          image: hr3000/hw_hospital_api:latest
+          image: hr3000/hw_hospital_api:tagVersion
           ports:
             - containerPort: 3000

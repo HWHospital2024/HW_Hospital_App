@@ -1,11 +1,22 @@
 pipeline {
-    agent {
-        label 'ubuntu' // Specify the label of the slave node
+    agent any
+    environment{
+        DOCKER_TAG = getDockerTag()
+        NEXUS_URL  = "172.31.34.232:8080"
+        IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
     }
+
     stages {
         stage('Build') {
             steps {
                 git branch: 'main', url: 'https://github.com/HWHospital2024/HW_Hospital_App'
+            }
+        }
+
+        stage('delete kube services') {
+            steps {
+            kubectl delete service hw-hospital-api-service
+            kubectl delete deployment hw-hospital-api-deployment    
             }
         }
         
@@ -45,7 +56,7 @@ pipeline {
                     // Check if the image ID is not empty
                     if (imageId) {
                         // Remove the image
-                        sh "docker rmi ${imageId}"
+                        sh "docker rmi -f ${imageId}"
                         echo "Image ${repository}:${tag} with ID ${imageId} removed successfully."
                     } else {
                         echo "No image found with repository ${repository} and tag ${tag}."
@@ -67,7 +78,24 @@ pipeline {
         
         stage('Docker build') {   
             steps {
-                sh 'sudo docker build -t hw_hospital_api .'
+                sh 'docker build . -t hr3000/hw_hospital_api:${DOCKER_TAG}'
+            }
+        }
+        stage('Docker Hub Movement'){
+            steps{
+                   withCredentials([string(credentialsId: 'Dockerhub', variable: 'dockerHubPWD')]) {
+                    sh "docker login -u hr3000 -p ${dockerHubPWD}"
+                    sh "docker push hr3000/hw_hospital_api:${DOCKER_TAG}"
+                    } 
+            }
+        }
+        stage('Kube deployment'){
+            steps{
+                    sh "chmod +x changeTag.sh"
+                    sh "./changeTag.sh ${DOCKER_TAG}"
+
+                    sh "kubectl apply -f node-deployment.yml"
+                    sh "kubectl apply -f service.yaml" 
             }
         }
     }
@@ -79,4 +107,9 @@ pipeline {
         }
     }
     
+}
+
+def getDockerTag(){
+    def tag  = sh script: 'git rev-parse HEAD', returnStdout: true
+    return tag
 }
