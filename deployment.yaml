@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agile_avengers
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: agile_avengers
+  template:
+    metadata:
+      labels:
+        app: agile_avengers
+    spec:
+      containers:
+        - name: agile_avengers
+          image: agile_avengers:latest
+          ports:
+            - containerPort: 3000
