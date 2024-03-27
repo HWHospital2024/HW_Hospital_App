@@ -68,7 +68,6 @@ pipeline {
         stage('Docker build') {   
             steps {
                 sh 'sudo docker build -t hw_hospital_api .'
-                sh 'sudo nohup docker run -p 3000:3000 hw_hospital_api &'
             }
         }
     }
