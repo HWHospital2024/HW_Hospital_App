@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: agile_avengers
+  name: hw-hospital-api-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: agile_avengers
+      app: hw-hospital-api
   template:
     metadata:
       labels:
-        app: agile_avengers
+        app: hw-hospital-api
     spec:
       containers:
-        - name: agile_avengers
-          image: agile_avengers:latest
+        - name: hw-hospital-api-container
+          image: hr3000/hw_hospital_api:latest
           ports:
             - containerPort: 3000
