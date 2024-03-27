@@ -105,6 +105,16 @@ pipeline {
                  subject: "Pipeline failed: ${currentBuild.fullDisplayName}",
                  body: "The pipeline ${currentBuild.fullDisplayName} has failed. Please check Jenkins for more details."
         }
+        // Clean after build
+        always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true,
+                    patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                               [pattern: '.propsfile', type: 'EXCLUDE']])
+        }
+    }
     }
     
 }
