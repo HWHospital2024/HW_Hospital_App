@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hw-hospital-api-deployment
+  namespace: default # Specify the namespace here
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: hw-hospital-api
@@ -14,6 +15,20 @@ spec:
     spec:
       containers:
         - name: hw-hospital-api-container
-          image: hr3000/hw_hospital_api:tagVersion
+          image: public.ecr.aws/r7i3e5e9/hw-hospital-images:latest
           ports:
             - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hw-service
+  namespace: default # Specify the namespace here
+spec:
+  selector:
+    app: hw-hospital-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

@@ -13,7 +13,7 @@ pipeline {
                          echo """
                          The current Zap configuration:
                              Scan Type: APIS
-                             Target: http://localhost:30000
+                             Target: http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com
                              Generate report: false
                          """
                      }
@@ -132,7 +132,7 @@ pipeline {
                     sh """
                              docker exec owasp \
                              zap-api-scan.py \
-                             -t http://10.104.246.172:3000 \
+                             -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
                              -f openapi
                              -x report.xml \
                              -I
@@ -155,10 +155,14 @@ pipeline {
                     patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                [pattern: '.propsfile', type: 'EXCLUDE']])
             echo "Removing container"
-            sh '''
-                docker stop owasp
-                docker rm owasp
-            '''                   
+            def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
+            if (zapImageId) {
+                sh "docker rmi $zapImageId"
+                echo "OWASP ZAP Docker image removed successfully."
+            } else {
+                echo "No OWASP ZAP Docker image found."
+            }                 
+            
         }
     }
     
