@@ -55,8 +55,6 @@ pipeline {
                     } else {
                         echo "No image found with repository ${repository} and tag ${tag}."
                     }
-                    kubectl delete service hw-hospital-api-service
-                    kubectl delete deployment hw-hospital-api-deployment
                 }
             }
         }
@@ -89,7 +87,6 @@ pipeline {
             steps{
                     sh "chmod +x changeTag.sh"
                     sh "./changeTag.sh ${DOCKER_TAG}"
-
                     sh "kubectl apply -f node-deployment.yml"
                     sh "kubectl apply -f service.yaml" 
             }
