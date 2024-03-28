@@ -131,6 +131,7 @@ pipeline {
                              docker exec owasp \
                              zap-api-scan.py \
                              -t http://localhost:3000 \
+                             -f openai
                              -x report.xml \
                              -I
                          """
