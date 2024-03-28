@@ -113,7 +113,7 @@ pipeline {
                    echo "Docker image started for movement to docker hub" 
                    withCredentials([string(credentialsId: 'Dockerhub', variable: 'dockerHubPWD')]) {
                     sh "docker login -u hr3000 -p ${dockerHubPWD}"
-                    sh "docker push hr3000/hw_hospital_api:${DOCKER_TAG}"
+                   // sh "docker push hr3000/hw_hospital_api:${DOCKER_TAG}"
                     } 
                     echo "Docker image moved to docker hub"
             }
