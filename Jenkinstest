@@ -155,13 +155,16 @@ pipeline {
                     patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                [pattern: '.propsfile', type: 'EXCLUDE']])
             echo "Removing container"
+            script{
             def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
+            
             if (zapImageId) {
                 sh "docker rmi $zapImageId"
                 echo "OWASP ZAP Docker image removed successfully."
             } else {
                 echo "No OWASP ZAP Docker image found."
-            }                 
+            }   
+            }              
             
         }
     }
