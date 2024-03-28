@@ -13,7 +13,7 @@ pipeline {
                          echo """
                          The current Zap configuration:
                              Scan Type: APIS
-                             Target: http://localhost:3000
+                             Target: http://localhost:30000
                              Generate report: false
                          """
                      }
@@ -132,7 +132,7 @@ pipeline {
                     sh """
                              docker exec owasp \
                              zap-api-scan.py \
-                             -t http://localhost:3000 \
+                             -t http://localhost:30000 \
                              -x report.xml \
                              -I
                          """
