@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hw-hospital-api-deployment
+  name: hw-hospital-api-deploymentloc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hw-hospital-api
+      app: hw-hospital-apiloc
   template:
     metadata:
       labels:
-        app: hw-hospital-api
+        app: hw-hospital-apiloc
     spec:
       containers:
         - name: hw-hospital-api-container
@@ -23,11 +23,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hw-hospital-api-service
+  name: hw-hospital-api-serviceloc
 spec:
   type: NodePort
   selector:
-    app: hw-hospital-api    # Corrected the selector label
+    app: hw-hospital-apiloc    # Corrected the selector label
   ports:
     - protocol: TCP
       port: 3000

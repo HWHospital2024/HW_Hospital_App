@@ -159,7 +159,8 @@ pipeline {
             def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
             
             if (zapImageId) {
-                sh "docker rmi $zapImageId"
+                sh "docker stop owasp"
+                sh "docker rm owasp"
                 echo "OWASP ZAP Docker image removed successfully."
             } else {
                 echo "No OWASP ZAP Docker image found."
