@@ -11,7 +11,7 @@ pipeline {
                  steps {
                      script {
                          echo """
-                         The current parameters are:
+                         The current Zap configuration:
                              Scan Type: APIS
                              Target: http://localhost:3000
                              Generate report: false
@@ -104,7 +104,7 @@ pipeline {
                 /bin/bash
                 """
                 sh 'docker build . -t hr3000/hw_hospital_api:${DOCKER_TAG}'
-                echo "Docker Container hr3000/hw_hospital_api: build completed"
+                echo "Docker Container hr3000/hw_hospital_api:${DOCKER_TAG} build completed"
 
             }
         }
@@ -153,6 +153,11 @@ pipeline {
                     notFailBuild: true,
                     patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                [pattern: '.propsfile', type: 'EXCLUDE']])
+            echo "Removing container"
+            sh '''
+                docker stop owasp
+                docker rm owasp
+            '''                   
         }
     }
     

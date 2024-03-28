@@ -7,17 +7,23 @@ pipeline {
     }
 
     stages {
+        stage('Pipeline Info') {
+                 steps {
+                     script {
+                         echo """
+                         The current Zap configuration are:
+                             Scan Type: APIS
+                             Target: http://localhost:3000
+                             Generate report: false
+                         """
+                     }
+                 }
+         }    
         stage('Build') {
             steps {
                 git branch: 'main', url: 'https://github.com/HWHospital2024/HW_Hospital_App'
             }
         }
-
-        stage('delete kube services') {
-            steps {
-            kubectl delete service hw-hospital-api-service
-            kubectl delete deployment hw-hospital-api-deployment    
-            }
         }
         
         stage('Remove Container') {
@@ -43,7 +49,7 @@ pipeline {
             }
         }
         
-        stage('Remove Docker Images') {
+        stage('Remove existing object') {
             steps {
                 script {
                     // Define the repository and tag of the image you want to remove
@@ -53,6 +59,7 @@ pipeline {
                     // Get the image ID of the specified repository and tag
                     def imageId = sh(script: "docker images -q ${repository}:${tag}", returnStdout: true).trim()
 
+                    echo "Program started for removing existing docker image"
                     // Check if the image ID is not empty
                     if (imageId) {
                         // Remove the image
@@ -61,41 +68,72 @@ pipeline {
                     } else {
                         echo "No image found with repository ${repository} and tag ${tag}."
                     }
+
+                    echo "Docker image removed"
                 }
             }
         }
         
-        stage('Run Tests') {
+      stage('Run Tests') {
             steps {
                 // Install npm dependencies
+                echo "Automated test started"
+                echo "npm initialized"
                 sh 'npm i'
                 sh 'npm i chai@4'
 
                 // Run Mocha Chai tests
+                echo "Mocha Chai test started"
                 sh 'npm run test'
+                echo "Mocha Chai test completed"
             }
-        }
+      }
         
-        stage('Docker build') {   
+        stage('Setting up Docker build') {   
             steps {
+                echo "Pulling up last OWASP ZAP container --> Start"
+                sh 'docker pull owasp/zap2docker-stable'
+                echo "Pulling up last VMS container --> End"
+                echo "Starting container --> Start"
+                sh """
+                docker run -dt --name owasp \
+                owasp/zap2docker-stable \
+                /bin/bash
+                """
                 sh 'docker build . -t hr3000/hw_hospital_api:${DOCKER_TAG}'
+                echo "Docker Container hr3000/hw_hospital_api:${DOCKER_TAG} build completed"
+
             }
         }
         stage('Docker Hub Movement'){
             steps{
+                   echo "Docker image started for movement to docker hub" 
                    withCredentials([string(credentialsId: 'Dockerhub', variable: 'dockerHubPWD')]) {
                     sh "docker login -u hr3000 -p ${dockerHubPWD}"
                     sh "docker push hr3000/hw_hospital_api:${DOCKER_TAG}"
                     } 
+                    echo "Docker image moved to docker hub"
             }
         }
+
         stage('Kube deployment'){
             steps{
+                    echo "Docker image deployment to Kubernetes started"
                     sh "chmod +x changeTag.sh"
                     sh "./changeTag.sh ${DOCKER_TAG}"
-
                     sh "kubectl apply -f node-deployment.yml"
-                    sh "kubectl apply -f service.yaml" 
+                    echo "Docker image deployment to Kubernetes compeleted"
+            }
+        }
+        stage('Scanning target on owasp container'){
+            steps{
+                    sh """
+                             docker exec owasp \
+                             zap-api-scan.py \
+                             -t http://localhost:3000 \
+                             -x report.xml \
+                             -I
+                         """
             }
         }
     }
@@ -113,6 +151,11 @@ pipeline {
                     notFailBuild: true,
                     patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                [pattern: '.propsfile', type: 'EXCLUDE']])
+            echo "Removing container"
+            sh '''
+                docker stop owasp
+                docker rm owasp
+            '''                                   
         }
     }
     
