@@ -85,6 +85,15 @@ pipeline {
                     } 
             }
         }
+        stage('Kube deployment'){
+            steps{
+                    sh "chmod +x changeTag.sh"
+                    sh "./changeTag.sh ${DOCKER_TAG}"
+
+                    sh "kubectl apply -f node-deployment.yml"
+                    sh "kubectl apply -f service.yaml" 
+            }
+        }
 
     }
     post {
