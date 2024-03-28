@@ -132,7 +132,7 @@ pipeline {
                     sh """
                              docker exec owasp \
                              zap-api-scan.py \
-                             -t http://localhost:30000 \
+                             -t http://hw-hospital-api-service:3000 \
                              -f openapi
                              -x report.xml \
                              -I
