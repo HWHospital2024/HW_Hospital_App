@@ -37,7 +37,7 @@ pipeline {
             }
         }
         
-        stage('Remove Docker Images') {
+        stage('Remove existing object') {
             steps {
                 script {
                     // Define the repository and tag of the image you want to remove
@@ -55,6 +55,8 @@ pipeline {
                     } else {
                         echo "No image found with repository ${repository} and tag ${tag}."
                     }
+                    kubectl delete service hw-hospital-api-service
+                    kubectl delete deployment hw-hospital-api-deployment
                 }
             }
         }
