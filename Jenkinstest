@@ -128,7 +128,7 @@ pipeline {
                         echo "Running owasp docker"
                         docker run -dt --name owasp owasp/zap2docker-stable /bin/bash
                         echo "Scan Execution started"
-                        output=$(docker exec owasp zap-api-scan.py -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com -f openapi)
+                        output=$(docker exec owasp zap-api-scan.py -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com -f openapi  || true)
 
                         fail_new_count=$(echo "$output" | grep -o 'FAIL-NEW: [0-9]*' | awk '{print $2}')
                         fail_inprog_count=$(echo "$output" | grep -o 'FAIL-INPROG: [0-9]*' | awk '{print $2}')
