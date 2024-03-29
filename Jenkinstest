@@ -160,7 +160,7 @@ pipeline {
             
             if (zapImageId) {
                 sh "docker stop owasp"
-                docker rm owasp"
+                sh "docker rm owasp"
                 echo "OWASP ZAP Docker image removed successfully."
             } else {
                 echo "No OWASP ZAP Docker image found."
