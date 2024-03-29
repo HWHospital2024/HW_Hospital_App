@@ -135,9 +135,12 @@ pipeline {
                             zap-api-scan.py \
                             -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
                             -f openapi
-                            -x report.xml \
                             -I
                         """
+                    echo "Test execution completed"                        
+                    sh 'docker stop owasp'
+                    sh 'docker rm owasp'
+                    echo "OWASP ZAP Docker image removed successfully."                        
             }
         }
     }
