@@ -119,36 +119,35 @@ pipeline {
         }
         stage('Scanning target on owasp container'){
             steps{
-                echo "Pulling up last OWASP ZAP container --> Start"
-                sh 'docker pull owasp/zap2docker-stable'
-                echo "Pulling up last VMS container --> End"
-                echo "Starting container --> Start"
-                echo "Running awasp docker"
-                sh """
-                    docker run -dt --name owasp \
-                    owasp/zap2docker-stable \
-                    /bin/bash
-                    """
-                echo "Scan Execution started"
-                sh """
-                    output=\$(docker exec owasp zap-api-scan.py -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com -f openapi)
+                script {
+                    sh '''
+                        echo "Pulling up last OWASP ZAP container --> Start"
+                        docker pull owasp/zap2docker-stable
+                        echo "Pulling up last VMS container --> End"
+                        echo "Starting container --> Start"
+                        echo "Running owasp docker"
+                        docker run -dt --name owasp owasp/zap2docker-stable /bin/bash
+                        echo "Scan Execution started"
+                        output=$(docker exec owasp zap-api-scan.py -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com -f openapi)
 
-                    fail_new_count=\$(echo "\$output" | grep -o 'FAIL-NEW: [0-9]*' | awk '{print \$2}')
-                    fail_inprog_count=\$(echo "\$output" | grep -o 'FAIL-INPROG: [0-9]*' | awk '{print \$2}')
+                        fail_new_count=$(echo "$output" | grep -o 'FAIL-NEW: [0-9]*' | awk '{print $2}')
+                        fail_inprog_count=$(echo "$output" | grep -o 'FAIL-INPROG: [0-9]*' | awk '{print $2}')
+                        echo "$output"
+                        echo "$fail_new_count"
+                        echo "$fail_inprog_count"
 
-                    echo "\$fail_new_count"
-                    echo "\$fail_inprog_count"
+                        if [[ $fail_new_count -gt 0 || $fail_inprog_count -gt 0 ]]; then
+                            exit 1
+                        else
+                            echo "Scanning has completed successfully"
+                        fi
 
-                    if [[ \$fail_new_count -gt 0 || \$fail_inprog_count -gt 0 ]]; then
-                        exit 1
-                    else
-                        echo "Scanning has completed successfully"
-                    fi
-                    """
-                echo "Test execution completed"                        
-                sh 'docker stop owasp'
-                sh 'docker rm owasp'
-                echo "OWASP ZAP Docker image removed successfully."                        
+                        echo "Test execution completed"
+                        docker stop owasp
+                        docker rm owasp
+                        echo "OWASP ZAP Docker image removed successfully."
+                    '''                  
+                }
             }
         }
 
