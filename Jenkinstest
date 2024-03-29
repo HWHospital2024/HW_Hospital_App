@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     environment{
@@ -92,15 +93,6 @@ pipeline {
         
         stage('Setting up Docker build') {   
             steps {
-                echo "Pulling up last OWASP ZAP container --> Start"
-                sh 'docker pull owasp/zap2docker-stable'
-                echo "Pulling up last VMS container --> End"
-                echo "Starting container --> Start"
-                sh """
-                docker run -dt --name owasp \
-                owasp/zap2docker-stable \
-                /bin/bash
-                """
                 sh 'docker build . -t hr3000/hw_hospital_api:${DOCKER_TAG}'
                 echo "Docker Container hr3000/hw_hospital_api:${DOCKER_TAG} build completed"
 
@@ -127,6 +119,15 @@ pipeline {
         }
         stage('Scanning target on owasp container'){
             steps{
+                echo "Pulling up last OWASP ZAP container --> Start"
+                sh 'docker pull owasp/zap2docker-stable'
+                echo "Pulling up last VMS container --> End"
+                echo "Starting container --> Start"
+                sh """
+                docker run -dt --name owasp \
+                owasp/zap2docker-stable \
+                /bin/bash
+                """
                     sh """
                              docker exec owasp \
                              zap-api-scan.py \
@@ -135,6 +136,15 @@ pipeline {
                              -x report.xml \
                              -I
                          """
+            def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
+            
+            if (zapImageId) {
+                sh "docker stop owasp"
+                sh "docker rm owasp"
+                echo "OWASP ZAP Docker image removed successfully."
+            } else {
+                echo "No OWASP ZAP Docker image found."
+            } 
             }
         }
     }
@@ -152,19 +162,6 @@ pipeline {
                     notFailBuild: true,
                     patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
                                [pattern: '.propsfile', type: 'EXCLUDE']])
-            echo "Removing container"
-            script{
-            def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
-            
-            if (zapImageId) {
-                sh "docker stop owasp"
-                sh "docker rm owasp"
-                echo "OWASP ZAP Docker image removed successfully."
-            } else {
-                echo "No OWASP ZAP Docker image found."
-            }   
-            }              
-            
         }
     }
     
