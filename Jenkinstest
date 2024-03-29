@@ -119,32 +119,35 @@ pipeline {
         }
         stage('Scanning target on owasp container'){
             steps{
-                echo "Pulling up last OWASP ZAP container --> Start"
-                sh 'docker pull owasp/zap2docker-stable'
-                echo "Pulling up last VMS container --> End"
-                echo "Starting container --> Start"
-                sh """
-                docker run -dt --name owasp \
-                owasp/zap2docker-stable \
-                /bin/bash
-                """
+                script {
+                    echo "Pulling up last OWASP ZAP container --> Start"
+                    sh 'docker pull owasp/zap2docker-stable'
+                    echo "Pulling up last VMS container --> End"
+                    echo "Starting container --> Start"
                     sh """
-                             docker exec owasp \
-                             zap-api-scan.py \
-                             -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
-                             -f openapi
-                             -x report.xml \
-                             -I
-                         """
-            def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
-            
-            if (zapImageId) {
-                sh "docker stop owasp"
-                sh "docker rm owasp"
-                echo "OWASP ZAP Docker image removed successfully."
-            } else {
-                echo "No OWASP ZAP Docker image found."
-            } 
+                    docker run -dt --name owasp \
+                    owasp/zap2docker-stable \
+                    /bin/bash
+                    """
+                        sh """
+                                docker exec owasp \
+                                zap-api-scan.py \
+                                -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
+                                -f openapi
+                                -x report.xml \
+                                -I
+                            """
+
+                    def zapImageId = sh(script: "docker images -q owasp/zap2docker-stable", returnStdout: true).trim()
+                    
+                    if (zapImageId) {
+                        sh "docker stop owasp"
+                        sh "docker rm owasp"
+                        echo "OWASP ZAP Docker image removed successfully."
+                    } else {
+                        echo "No OWASP ZAP Docker image found."
+                    } 
+                }
             }
         }
     }
