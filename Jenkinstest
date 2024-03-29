@@ -131,11 +131,20 @@ pipeline {
                         """
                     echo "Scan Execution started"
                     sh """
-                            docker exec owasp \
-                            zap-api-scan.py \
-                            -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
-                            -f openapi
-                            -I
+                            output=$(docker exec owasp zap-api-scan.py -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com -f openapi)
+
+                            fail_new_count=$(echo "$output" | grep -o 'FAIL-NEW: [0-9]*' | awk '{print $2}')
+                            fail_inprog_count=$(echo "$output" | grep -o 'FAIL-INPROG: [0-9]*' | awk '{print $2}')
+
+                            echo "$fail_new_count"
+                            echo "$fail_inprog_count"
+
+                            if [[ $fail_new_count -gt 0 || $fail_inprog_count -gt 0 ]]; then
+                                exit 1
+                            else
+                                echo "Scanning has completed successfully"
+                            fi
+
                         """
                     echo "Test execution completed"                        
                     sh 'docker stop owasp'
