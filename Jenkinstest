@@ -124,21 +124,24 @@ pipeline {
                     sh 'docker pull owasp/zap2docker-stable'
                     echo "Pulling up last VMS container --> End"
                     echo "Starting container --> Start"
+                    echo "Running awasp docker"
                     sh """
-                    docker run -dt --name owasp \
-                    owasp/zap2docker-stable \
-                    /bin/bash
-                    """
-                        sh """
-                                docker exec owasp \
-                                zap-api-scan.py \
-                                -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
-                                -f openapi
-                                -x report.xml \
-                                -I
-                            """
-                    sh "docker stop owasp"
-                    sh "docker rm owasp"
+                        docker run -dt --name owasp \
+                        owasp/zap2docker-stable \
+                        /bin/bash
+                        """
+                    echo "Scan Execution started"
+                    sh """
+                            docker exec owasp \
+                            zap-api-scan.py \
+                            -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com \
+                            -f openapi
+                            -x report.xml \
+                            -I
+                        """
+                    echo "Test execution completed"                        
+                    sh 'docker stop owasp'
+                    sh 'docker rm owasp'
                     echo "OWASP ZAP Docker image removed successfully."
                 }
             }
