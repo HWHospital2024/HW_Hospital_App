@@ -65,6 +65,7 @@ pipeline {
         
         stage('Setting up Docker build') {   
             steps {
+                echo "Docker image is getting built for the new tag"
                 sh 'docker build . -t hr3000/hw_hospital_api:${DOCKER_TAG}'
                 echo "Docker Container hr3000/hw_hospital_api:${DOCKER_TAG} build completed"
 
