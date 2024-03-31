@@ -2,8 +2,6 @@ pipeline {
     agent any
     environment{
         DOCKER_TAG = getDockerTag()
-        NEXUS_URL  = "172.31.34.232:8080"
-        IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
     }
 
     stages {
@@ -11,9 +9,9 @@ pipeline {
                  steps {
                      script {
                          echo """
-                         The current Zap configuration are:
+                         The current Zap configuration:
                              Scan Type: APIS
-                             Target: http://localhost:3000
+                             Target: http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com
                              Generate report: false
                          """
                      }
@@ -24,29 +22,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/HWHospital2024/HW_Hospital_App'
             }
         }
-        }
-        
-        stage('Remove Container') {
-            steps {
-                // Execute the shell script to remove the container
-                script {
-                    sh '''
-                        #!/bin/bash
-
-                        # Get the container ID of the container you want to remove
-                        CONTAINER_ID=$(docker ps -aqf "ancestor=hw_hospital_api")
-
-                        # Check if the container ID is not empty
-                        if [ -n "$CONTAINER_ID" ]; then
-                            # Remove the container
-                            docker rm -f "$CONTAINER_ID"
-                            echo "Container with ID $CONTAINER_ID removed successfully."
-                        else
-                            echo "No container found with the specified image."
-                        fi
-                    '''
-                }
-            }
         }
         
         stage('Remove existing object') {
@@ -91,50 +66,43 @@ pipeline {
         
         stage('Setting up Docker build') {   
             steps {
-                echo "Pulling up last OWASP ZAP container --> Start"
-                sh 'docker pull owasp/zap2docker-stable'
-                echo "Pulling up last VMS container --> End"
-                echo "Starting container --> Start"
-                sh """
-                docker run -dt --name owasp \
-                owasp/zap2docker-stable \
-                /bin/bash
-                """
                 sh 'docker build . -t hr3000/hw_hospital_api:${DOCKER_TAG}'
                 echo "Docker Container hr3000/hw_hospital_api:${DOCKER_TAG} build completed"
 
             }
         }
-        stage('Docker Hub Movement'){
-            steps{
-                   echo "Docker image started for movement to docker hub" 
-                   withCredentials([string(credentialsId: 'Dockerhub', variable: 'dockerHubPWD')]) {
-                    sh "docker login -u hr3000 -p ${dockerHubPWD}"
-                    sh "docker push hr3000/hw_hospital_api:${DOCKER_TAG}"
-                    } 
-                    echo "Docker image moved to docker hub"
-            }
-        }
 
-        stage('Kube deployment'){
-            steps{
-                    echo "Docker image deployment to Kubernetes started"
-                    sh "chmod +x changeTag.sh"
-                    sh "./changeTag.sh ${DOCKER_TAG}"
-                    sh "kubectl apply -f node-deployment.yml"
-                    echo "Docker image deployment to Kubernetes compeleted"
-            }
-        }
         stage('Scanning target on owasp container'){
             steps{
-                    sh """
-                             docker exec owasp \
-                             zap-api-scan.py \
-                             -t http://localhost:3000 \
-                             -f openapi
-                             -x report.xml \
-                             -I
-                         """
+                script {
+                    sh '''
+                        echo "Pulling up last OWASP ZAP container --> Start"
+                        docker pull owasp/zap2docker-stable
+                        echo "Pulling up last VMS container --> End"
+                        echo "Starting container --> Start"
+                        echo "Running owasp docker"
+                        docker run -dt --name owasp owasp/zap2docker-stable /bin/bash
+                        echo "Scan Execution started"
+                        output=$(docker exec owasp zap-api-scan.py -t http://ab2240c2ab1f74a62abad9870a7a7777-2073886997.us-east-1.elb.amazonaws.com -f openapi  || true)
+
+                        fail_new_count=$(echo "$output" | grep -o 'FAIL-NEW: [0-9]*' | awk '{print $2}')
+                        fail_inprog_count=$(echo "$output" | grep -o 'FAIL-INPROG: [0-9]*' | awk '{print $2}')
+                        echo "$output"
+                        echo "$fail_new_count"
+                        echo "$fail_inprog_count"
+
+                        if [[ $fail_new_count -gt 0 || $fail_inprog_count -gt 0 ]]; then
+                            exit 1
+                        else
+                            echo "Scanning has completed successfully"
+                        fi
+
+                        echo "Test execution completed"
+                        docker stop owasp
+                        docker rm owasp
+                        echo "OWASP ZAP Docker image removed successfully."
+                    '''                  
+                }
             }
         }
     }
