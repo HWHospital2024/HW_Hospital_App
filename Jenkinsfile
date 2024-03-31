@@ -22,7 +22,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/HWHospital2024/HW_Hospital_App'
             }
         }
-        }
         
         stage('Remove existing object') {
             steps {
@@ -127,7 +126,6 @@ pipeline {
             '''                                   
         }
     }
-    
 }
 
 def getDockerTag(){
