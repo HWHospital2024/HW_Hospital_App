@@ -51,6 +51,7 @@ pipeline {
       stage('Run Tests') {
             steps {
                 // Install npm dependencies
+                sh 'node --version'
                 echo "Automated test started"
                 echo "npm initialized"
                 sh 'npm i'
